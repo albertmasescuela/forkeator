@@ -1,0 +1,9 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "forkeator": {
+      "description": "A blank schematic.",
+      "factory": "./forkeator/index#forkeator"
+    }
+  }
+}
