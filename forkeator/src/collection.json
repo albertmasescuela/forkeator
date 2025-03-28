@@ -4,6 +4,16 @@
     "forkeator": {
       "description": "A blank schematic.",
       "factory": "../dist/forkeator/index#forkeator"
+    },
+    "prompt": {
+      "description": "Crea un fitxer nou amb un nom definit per l'usuari",
+      "factory": "../dist/forkeator/index#prompt",
+      "schema": "../dist/forkeator/schema.json"
+    },
+    "prompt2": {
+      "description": "Crea un fitxer nou amb un nom definit per l'usuari",
+      "factory": "../dist/forkeator/index#prompt2",
+      "schema": "../dist/forkeator/schema.json"
     }
   }
 }

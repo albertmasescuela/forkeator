@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "description": "A blank schematics",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && cp src/forkeator/schema.json dist/forkeator/",
     "test": "npm run build && jasmine src/**/*_spec.js",
-    "generate-fork": "schematics .:forkeator --dry-run=false"
+    "generate-fork": "schematics .:forkeator --dry-run=false",
+    "generate-prompt": "schematics .:prompt --dry-run=false",
+    "generate-prompt2": "schematics .:prompt2 --dry-run=false"
   },
   "keywords": [
     "schematics"
