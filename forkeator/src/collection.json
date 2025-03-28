@@ -3,7 +3,7 @@
   "schematics": {
     "forkeator": {
       "description": "A blank schematic.",
-      "factory": "./forkeator/index#forkeator"
+      "factory": "../dist/forkeator/index#forkeator"
     }
   }
 }
