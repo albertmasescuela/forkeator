@@ -7,7 +7,8 @@
     "test": "npm run build && jasmine src/**/*_spec.js",
     "generate-fork": "schematics .:forkeator --dry-run=false",
     "generate-prompt": "schematics .:prompt --dry-run=false",
-    "generate-prompt2": "schematics .:prompt2 --dry-run=false"
+    "generate-prompt2": "schematics .:prompt2 --dry-run=false",
+    "generate-prompt3": "schematics .:prompt3 --dry-run=true"
   },
   "keywords": [
     "schematics"

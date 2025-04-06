@@ -1,5 +1,5 @@
-import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
-
+import { Rule, SchematicContext, Tree, externalSchematic } from '@angular-devkit/schematics';
+import * as path from 'path';
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
@@ -57,10 +57,10 @@ export function prompt2(options: any): Rule {
       overwrite: options.overwrite || false,
     };
 
-    context.logger.info(`📥 Respostes rebudes: ${JSON.stringify(responses)}`);
+    context.logger.info(`📥 Respostes recibidas: ${JSON.stringify(responses)}`);
 
     // Guarda les respostes en un fitxer
-    const responseFile = 'respostes.json';
+    const responseFile = 'respuestas.json';
 
     if (tree.exists(responseFile)) {
       const existingResponses = JSON.parse(tree.read(responseFile)!.toString('utf-8'));
@@ -69,24 +69,76 @@ export function prompt2(options: any): Rule {
       tree.create(responseFile, JSON.stringify(responses, null, 2));
     }
 
-    context.logger.info(`✅ Respostes desades al fitxer "${responseFile}".`);
-
-    // Executa accions segons les respostes
-    if (tree.exists(responses.fileName)) {
-      if (!responses.overwrite) {
-        context.logger.warn(`⚠️ El fitxer "${responses.fileName}" ja existeix i no es sobreescriurà.`);
-      } else {
-        tree.overwrite(responses.fileName, 'Contingut generat per forkeator!');
-        context.logger.info(`✅ Fitxer "${responses.fileName}" sobreescrit correctament.`);
-      }
-    } else {
-      tree.create(responses.fileName, 'Contingut generat per forkeator!');
-      context.logger.info(`✅ Fitxer "${responses.fileName}" creat correctament.`);
-    }
+    context.logger.info(`✅ Respuestas "${responseFile}".`);
 
     return tree;
   };
 }
+
+// export function prompt3(options: any): Rule {
+//   return (tree: Tree, context: SchematicContext) => {
+//     const responses = {
+//       fileName: options.fileName || 'nou-fitxer.txt',
+//       overwrite: options.overwrite || false,
+//       destinationPath: options.destinationPath || '' // 🆕 Afegim la ruta de destí
+//     };
+
+//     context.logger.info(`📥 Respostes rebudes: ${JSON.stringify(responses)}`);
+
+//     // Guarda les respostes en un fitxer
+//     const responseFile = 'respuestas.json';
+
+//     if (tree.exists(responseFile)) {
+//       const existingResponses = JSON.parse(tree.read(responseFile)!.toString('utf-8'));
+//       tree.overwrite(responseFile, JSON.stringify({ ...existingResponses, ...responses }, null, 2));
+//     } else {
+//       tree.create(responseFile, JSON.stringify(responses, null, 2));
+//     }
+
+//     context.logger.info(`✅ Respostes guardades a "${responseFile}".`);
+
+//     return tree;
+//   };
+// }
+
+export function prompt3(options: any): Rule {
+  return (tree: Tree, context: SchematicContext) => {
+    const responses = {
+      fileName: options.fileName || 'nou-fitxer.txt',
+      overwrite: options.overwrite || false,
+      destinationPath: options.destinationPath || ''
+    };
+
+    context.logger.info(`📥 Respostes rebudes: ${JSON.stringify(responses)}`);
+
+    // Guarda les respostes en un fitxer
+    const responseFile = 'respuestas.json';
+    if (tree.exists(responseFile)) {
+      const existingResponses = JSON.parse(tree.read(responseFile)!.toString('utf-8'));
+      tree.overwrite(responseFile, JSON.stringify({ ...existingResponses, ...responses }, null, 2));
+    } else {
+      tree.create(responseFile, JSON.stringify(responses, null, 2));
+    }
+
+    if (!responses.destinationPath) {
+      context.logger.warn(`⚠️ No s'ha especificat cap ruta de destí.`);
+      return tree;
+    }
+
+    const targetPath = path.resolve(responses.destinationPath);
+
+    // 🏗️ Genera un projecte Angular a la ruta especificada
+    return externalSchematic('@schematics/angular', 'ng-new', {
+      name: 'nou-projecte',
+      directory: targetPath,
+      version: '18.0.0',
+      routing: true,
+      style: 'scss'
+    });
+  };
+}
+
+
 
 
 
