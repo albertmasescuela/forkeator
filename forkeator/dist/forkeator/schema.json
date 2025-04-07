@@ -10,6 +10,11 @@
       "default": "nuevo-archivo.txt",
       "x-prompt": "Nombre del archivo a crear:"
     },
+    "projectName": {
+      "type": "string",
+      "description": "Nombre del proyecto a crear",
+      "x-prompt": "Nombre del proyecto :"
+    },
     "overwrite": {
       "type": "boolean",
       "description": "¿Sobrescribir si ya existe?",

@@ -4,6 +4,8 @@ exports.forkeator = forkeator;
 exports.prompt = prompt;
 exports.prompt2 = prompt2;
 exports.prompt3 = prompt3;
+const path = require("path");
+const child_process_1 = require("child_process");
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
 function forkeator(_options) {
@@ -66,15 +68,65 @@ function prompt2(options) {
         return tree;
     };
 }
+// export function prompt3(options: any): Rule {
+//   return (tree: Tree, context: SchematicContext) => {
+//     const responses = {
+//       fileName: options.fileName || 'nou-fitxer.txt',
+//       overwrite: options.overwrite || false,
+//       destinationPath: options.destinationPath || '' // 🆕 Afegim la ruta de destí
+//     };
+//     context.logger.info(`📥 Respostes rebudes: ${JSON.stringify(responses)}`);
+//     // Guarda les respostes en un fitxer
+//     const responseFile = 'respuestas.json';
+//     if (tree.exists(responseFile)) {
+//       const existingResponses = JSON.parse(tree.read(responseFile)!.toString('utf-8'));
+//       tree.overwrite(responseFile, JSON.stringify({ ...existingResponses, ...responses }, null, 2));
+//     } else {
+//       tree.create(responseFile, JSON.stringify(responses, null, 2));
+//     }
+//     context.logger.info(`✅ Respostes guardades a "${responseFile}".`);
+//     return tree;
+//   };
+// }
+// export function prompt3(options: any): Rule {
+//   return (tree: Tree, context: SchematicContext) => {
+//     const responses = {
+//       fileName: options.fileName || 'nou-fitxer.txt',
+//       overwrite: options.overwrite || false,
+//       destinationPath: options.destinationPath || ''
+//     };
+//     context.logger.info(`📥 Respostes rebudes: ${JSON.stringify(responses)}`);
+//     // Guarda les respostes en un fitxer
+//     const responseFile = 'respuestas.json';
+//     if (tree.exists(responseFile)) {
+//       const existingResponses = JSON.parse(tree.read(responseFile)!.toString('utf-8'));
+//       tree.overwrite(responseFile, JSON.stringify({ ...existingResponses, ...responses }, null, 2));
+//     } else {
+//       tree.create(responseFile, JSON.stringify(responses, null, 2));
+//     }
+//     if (!responses.destinationPath) {
+//       context.logger.warn(`⚠️ No s'ha especificat cap ruta de destí.`);
+//       return tree;
+//     }
+//     const targetPath = path.resolve(responses.destinationPath);
+//     // 🏗️ Genera un projecte Angular a la ruta especificada
+//     return externalSchematic('@schematics/angular', 'ng-new', {
+//       name: 'nou-projecte',
+//       directory: targetPath,
+//       version: '18.0.0',
+//       routing: true,
+//       style: 'scss'
+//     });
+//   };
+// }
 function prompt3(options) {
     return (tree, context) => {
         const responses = {
             fileName: options.fileName || 'nou-fitxer.txt',
             overwrite: options.overwrite || false,
-            destinationPath: options.destinationPath || '' // 🆕 Afegim la ruta de destí
+            destinationPath: options.destinationPath || ''
         };
         context.logger.info(`📥 Respostes rebudes: ${JSON.stringify(responses)}`);
-        // Guarda les respostes en un fitxer
         const responseFile = 'respuestas.json';
         if (tree.exists(responseFile)) {
             const existingResponses = JSON.parse(tree.read(responseFile).toString('utf-8'));
@@ -83,7 +135,25 @@ function prompt3(options) {
         else {
             tree.create(responseFile, JSON.stringify(responses, null, 2));
         }
-        context.logger.info(`✅ Respostes guardades a "${responseFile}".`);
+        if (!responses.destinationPath) {
+            context.logger.warn(`⚠️ No s'ha especificat cap ruta de destí.`);
+            return tree;
+        }
+        const targetPath = path.resolve(responses.destinationPath);
+        const projectName = path.basename(targetPath);
+        context.logger.info(`🛠️ Creant nou projecte Angular a: ${targetPath}`);
+        try {
+            // execSync(`npx -p @angular/cli@18 ng new nou-projecte --directory "${targetPath}" --routing --style=scss --skip-install`, {
+            //   stdio: 'inherit'
+            // });
+            (0, child_process_1.execSync)(`npx -y -p @angular/cli@18.2.17 ng new ${projectName} --directory "${targetPath}" --routing --style=scss --skip-install`, {
+                stdio: 'inherit'
+            });
+            context.logger.info(`✅ Projecte creat correctament a ${targetPath}`);
+        }
+        catch (error) {
+            context.logger.error(`❌ Error al crear el projecte: ${error}`);
+        }
         return tree;
     };
 }
